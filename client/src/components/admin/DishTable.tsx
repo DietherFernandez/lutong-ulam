@@ -1,4 +1,5 @@
 import { Pencil, Trash2, Star } from 'lucide-react';
+import { formatPrice } from '../../utils/format';
 import type { Dish } from '../../types';
 
 interface Props {
@@ -42,7 +43,7 @@ export default function DishTable({ dishes, search, onEdit, onDelete }: Props) {
               </td>
               <td className="px-4 py-3 font-medium text-gray-900">{dish.name}</td>
               <td className="px-4 py-3 text-gray-600">{dish.category_name || '—'}</td>
-              <td className="px-4 py-3 font-medium text-gray-900">${Number(dish.price).toFixed(2)}</td>
+              <td className="px-4 py-3 font-medium text-gray-900">{formatPrice(dish.price)}</td>
               <td className="px-4 py-3">
                 {dish.is_featured ? <Star size={16} className="text-yellow-500 fill-yellow-500" /> : <span className="text-gray-300">—</span>}
               </td>

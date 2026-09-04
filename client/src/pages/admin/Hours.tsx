@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { openingHoursApi } from '../../api';
-import { useFetch } from '../../hooks/useFetch';
+import { useFetch, broadcastRefresh } from '../../hooks/useFetch';
 import { getErrorMessage } from '../../utils/errors';
 import PageHeader from '../../components/admin/PageHeader';
 import { Toast, useToast } from '../../components/admin/Toast';
@@ -17,7 +17,7 @@ const DAYS = [
 const DEFAULT_DAY: OpeningHours = { id: 0, day: '', opening_time: '09:00', closing_time: '22:00', is_closed: false };
 
 export default function AdminHours() {
-  const { data, loading, refetch } = useFetch<{ hours: OpeningHours[] }>(() => openingHoursApi.getAll(), []);
+  const { data, loading, refetch } = useFetch<{ hours: OpeningHours[] }>(() => openingHoursApi.getAll(), [], { autoRefresh: false });
   const { toast, show, hide } = useToast();
   const [hours, setHours] = useState<OpeningHours[]>([]);
   const [saving, setSaving] = useState(false);
@@ -45,6 +45,7 @@ export default function AdminHours() {
       show('Opening hours saved!');
       setHours([]);
       refetch();
+      broadcastRefresh();
     } catch (err) { show(getErrorMessage(err, 'Failed to save'), 'error'); }
     finally { setSaving(false); }
   };

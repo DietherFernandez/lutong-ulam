@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Image, Upload } from 'lucide-react';
 import { settingsApi, imagesApi } from '../../api';
-import { useFetch } from '../../hooks/useFetch';
+import { useFetch, broadcastRefresh } from '../../hooks/useFetch';
 import { getErrorMessage } from '../../utils/errors';
 import PageHeader from '../../components/admin/PageHeader';
 import SettingsField from '../../components/admin/SettingsField';
@@ -11,8 +11,8 @@ import { LoadingSpinner } from '../../components/common/States';
 import type { RestaurantSettings, Image as ImageType } from '../../types';
 
 export default function AdminSettings() {
-  const { data, loading, refetch } = useFetch<{ settings: RestaurantSettings }>(() => settingsApi.getAll(), []);
-  const { data: imagesData } = useFetch<{ images: ImageType[] }>(() => imagesApi.getAll(), []);
+  const { data, loading, refetch } = useFetch<{ settings: RestaurantSettings }>(() => settingsApi.getAll(), [], { autoRefresh: false });
+  const { data: imagesData } = useFetch<{ images: ImageType[] }>(() => imagesApi.getAll(), [], { autoRefresh: false });
   const { toast, show, hide } = useToast();
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState<Record<string, string>>({});
@@ -26,7 +26,7 @@ export default function AdminSettings() {
   const handleSave = async () => {
     if (Object.keys(form).length === 0) { show('No changes to save', 'info'); return; }
     setSaving(true);
-    try { await settingsApi.update(form); show('Settings saved!'); setForm({}); refetch(); }
+    try { await settingsApi.update(form); show('Settings saved!'); setForm({}); refetch(); broadcastRefresh(); }
     catch (err) { show(getErrorMessage(err, 'Failed to save'), 'error'); }
     finally { setSaving(false); }
   };

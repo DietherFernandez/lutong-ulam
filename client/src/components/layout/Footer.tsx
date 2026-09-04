@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { formatTime } from '../../utils/format';
 import { Facebook, Instagram, MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { settingsApi, openingHoursApi } from '../../api';
 import { useFetch } from '../../hooks/useFetch';
@@ -29,7 +30,7 @@ export default function Footer() {
   const displayHours = (day: string) => {
     const h = hoursMap[day];
     if (!h || h.is_closed) return 'Closed';
-    return `${h.opening_time} - ${h.closing_time}`;
+    return `${formatTime(h.opening_time)} - ${formatTime(h.closing_time)}`;
   };
 
   return (
@@ -38,12 +39,16 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* About */}
           <div>
-            <h3 className="text-xl font-serif font-bold text-white mb-4">
-              {settings?.restaurant_name || 'Savory Kitchen'}
-            </h3>
-            <p className="text-sm text-gray-400 leading-relaxed mb-4">
-              {settings?.description || 'Experience the finest dining with fresh ingredients and exceptional service.'}
-            </p>
+            {settings?.restaurant_name && (
+              <h3 className="text-xl font-serif font-bold text-white mb-4">
+                {settings.restaurant_name}
+              </h3>
+            )}
+            {settings?.description && (
+              <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                {settings.description}
+              </p>
+            )}
             {(settings?.facebook_url || settings?.instagram_url) && (
               <div className="flex items-center gap-3">
                 {settings?.facebook_url && (
@@ -128,7 +133,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="mt-12 pt-8 border-t border-gray-800 text-center">
           <p className="text-sm text-gray-500">
-            © {currentYear} {settings?.restaurant_name || 'Savory Kitchen'}. All rights reserved.
+            &copy; {currentYear}{settings?.restaurant_name ? ` ${settings.restaurant_name}` : ''}. All rights reserved.
           </p>
         </div>
       </div>

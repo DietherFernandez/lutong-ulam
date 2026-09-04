@@ -1,4 +1,5 @@
 import { MapPin, Phone, Clock } from 'lucide-react';
+import { formatTime } from '../../utils/format';
 import { settingsApi, openingHoursApi } from '../../api';
 import { useFetch } from '../../hooks/useFetch';
 import type { RestaurantSettings, OpeningHours } from '../../types';
@@ -52,7 +53,7 @@ export default function InfoBar() {
                 {todayHours
                   ? todayHours.is_closed
                     ? 'Closed Today'
-                    : `${todayHours.opening_time} – ${todayHours.closing_time}`
+                    : `${formatTime(todayHours.opening_time)} – ${formatTime(todayHours.closing_time)}`
                   : 'Check schedule'}
               </p>
             </div>

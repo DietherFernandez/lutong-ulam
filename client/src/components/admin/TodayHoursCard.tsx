@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { formatTime } from '../../utils/format';
 import { Clock } from 'lucide-react';
 
 export default function TodayHoursCard({ hours }: { hours: any[] }) {
@@ -15,7 +16,7 @@ export default function TodayHoursCard({ hours }: { hours: any[] }) {
         {todayH ? (
           todayH.is_closed
             ? <p className="text-red-600 font-bold">Closed</p>
-            : <p className="text-gray-900 font-bold">{todayH.opening_time} – {todayH.closing_time}</p>
+            : <p className="text-gray-900 font-bold">{formatTime(todayH.opening_time)} – {formatTime(todayH.closing_time)}</p>
         ) : (
           <p className="text-gray-500 text-sm">No hours set</p>
         )}

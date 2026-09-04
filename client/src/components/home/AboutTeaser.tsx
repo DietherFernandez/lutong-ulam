@@ -24,11 +24,10 @@ export default function AboutTeaser() {
               Our Story
             </span>
             <h2 className="section-title mb-4">
-              {aboutSection?.title || `About ${settings?.restaurant_name || 'Savory Kitchen'}`}
+              {aboutSection?.title || (settings?.restaurant_name ? `About ${settings.restaurant_name}` : 'About Us')}
             </h2>
             <p className="text-gray-600 leading-relaxed mb-6">
-              {aboutSection?.subtitle || settings?.description ||
-                'We believe that great food starts with great ingredients. Every dish we serve is crafted with passion, using the freshest locally-sourced produce and the finest cuts of meat and seafood.'}
+              {aboutSection?.subtitle || settings?.description}
             </p>
             <Link to="/about" className="btn-primary inline-flex items-center gap-2">
               Learn More About Us <ArrowRight size={16} />

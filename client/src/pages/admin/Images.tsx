@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { Trash2, Upload, Copy, Check } from 'lucide-react';
 import { imagesApi } from '../../api';
-import { useFetch } from '../../hooks/useFetch';
+import { useFetch, broadcastRefresh } from '../../hooks/useFetch';
 import { getErrorMessage } from '../../utils/errors';
 import PageHeader from '../../components/admin/PageHeader';
 import Modal from '../../components/admin/Modal';
@@ -10,7 +10,7 @@ import { LoadingSpinner } from '../../components/common/States';
 import type { Image } from '../../types';
 
 export default function AdminImages() {
-  const { data, loading, refetch } = useFetch<{ images: Image[] }>(() => imagesApi.getAll(), []);
+  const { data, loading, refetch } = useFetch<{ images: Image[] }>(() => imagesApi.getAll(), [], { autoRefresh: false });
   const { toast, show, hide } = useToast();
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -30,6 +30,7 @@ export default function AdminImages() {
       }
       show(`${list.length} image(s) uploaded!`);
       refetch();
+      broadcastRefresh();
     } finally {
       setUploading(false);
     }
@@ -38,7 +39,7 @@ export default function AdminImages() {
   const handleDelete = async () => {
     if (!deleteId) return;
     setDeleting(true);
-    try { await imagesApi.delete(deleteId); show('Image deleted!'); setDeleteId(null); refetch(); }
+    try { await imagesApi.delete(deleteId); show('Image deleted!'); setDeleteId(null); refetch(); broadcastRefresh(); }
     catch (err) { show(getErrorMessage(err, 'Failed to delete'), 'error'); }
     finally { setDeleting(false); }
   };

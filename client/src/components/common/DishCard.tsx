@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { formatPrice } from '../../utils/format';
 import { Star, Tag } from 'lucide-react';
 import type { Dish } from '../../types';
 
@@ -49,7 +50,7 @@ export default function DishCard({ dish, showCategory = true }: DishCardProps) {
             {dish.name}
           </h3>
           <span className="text-primary-600 font-bold whitespace-nowrap">
-            ${Number(dish.price).toFixed(2)}
+            {formatPrice(dish.price)}
           </span>
         </div>
 

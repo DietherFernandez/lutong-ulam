@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { categoriesApi, dishesApi } from '../../api';
-import { useFetch } from '../../hooks/useFetch';
+import { useFetch, broadcastRefresh } from '../../hooks/useFetch';
 import { getErrorMessage } from '../../utils/errors';
 import PageHeader from '../../components/admin/PageHeader';
 import Modal from '../../components/admin/Modal';
@@ -14,8 +14,8 @@ import type { Category } from '../../types';
 const EMPTY = { name: '', description: '', sort_order: 0 };
 
 export default function AdminCategories() {
-  const { data, loading, refetch } = useFetch<{ categories: Category[] }>(() => categoriesApi.getAll(), []);
-  const { data: dishesData } = useFetch<{ dishes: any[] }>(() => dishesApi.getAll(), []);
+  const { data, loading, refetch } = useFetch<{ categories: Category[] }>(() => categoriesApi.getAll(), [], { autoRefresh: false });
+  const { data: dishesData } = useFetch<{ dishes: any[] }>(() => dishesApi.getAll(), [], { autoRefresh: false });
   const { toast, show, hide } = useToast();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -41,7 +41,7 @@ export default function AdminCategories() {
     try {
       if (editId) { await categoriesApi.update(editId, form); show('Category updated!'); }
       else { await categoriesApi.create(form); show('Category created!'); }
-      setModalOpen(false); refetch();
+      setModalOpen(false); refetch(); broadcastRefresh();
     } catch (err) { show(getErrorMessage(err, 'Failed to save'), 'error'); }
     finally { setSaving(false); }
   };
@@ -49,7 +49,7 @@ export default function AdminCategories() {
   const handleDelete = async () => {
     if (!deleteId) return;
     setDeleting(true);
-    try { await categoriesApi.delete(deleteId, forceDelete); show('Category deleted!'); setDeleteId(null); setForceDelete(false); refetch(); }
+    try { await categoriesApi.delete(deleteId, forceDelete); show('Category deleted!'); setDeleteId(null); setForceDelete(false); refetch(); broadcastRefresh(); }
     catch (err) { show(getErrorMessage(err, 'Failed to delete'), 'error'); }
     finally { setDeleting(false); }
   };

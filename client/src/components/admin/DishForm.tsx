@@ -18,19 +18,28 @@ interface Props {
   images: Image[];
   errors: Record<string, string>;
   onChange: (data: DishFormData) => void;
+  /** Called when an image upload fails, so the parent can show a toast. */
+  onUploadError?: (err: unknown) => void;
 }
 
-export default function DishForm({ initial, categories, images, errors, onChange }: Props) {
+export default function DishForm({ initial, categories, images, errors, onChange, onUploadError }: Props) {
   const [uploading, setUploading] = useState(false);
 
   const handleUpload = async (file: File) => {
     setUploading(true);
     try {
       const result = await imagesApi.upload(file);
-      const url = (result as any).public_url || (result as any).file_path || '';
+      // IMPORTANT: the dishes table stores a fully-qualified URL in `image`,
+      // so the browser can render it directly. `file_path` is a relative
+      // storage path (e.g. "dishes/12345.jpg") and will not resolve to a
+      // valid image if used as an <img src>. Always use `public_url`.
+      const url = (result as any).public_url;
+      if (!url) {
+        throw new Error('Upload succeeded but no public URL was returned.');
+      }
       onChange({ ...initial, image: url });
-    } catch {
-      // silent fail
+    } catch (err) {
+      onUploadError?.(err);
     } finally {
       setUploading(false);
     }
@@ -49,7 +58,7 @@ export default function DishForm({ initial, categories, images, errors, onChange
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Price ($) *</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Price (₱) *</label>
           <input type="number" step="0.01" min="0" value={initial.price} onChange={(e) => onChange({ ...initial, price: e.target.value })} className={`input-field ${errors.price ? 'border-red-500' : ''}`} placeholder="0.00" />
           {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price}</p>}
         </div>
@@ -69,8 +78,8 @@ export default function DishForm({ initial, categories, images, errors, onChange
             <p className="text-xs text-gray-500 mb-1">Pick from uploaded:</p>
             <div className="flex flex-wrap gap-1 max-h-24 overflow-y-auto">
               {images.slice(0, 20).map((img) => (
-                <button key={img.id} type="button" onClick={() => onChange({ ...initial, image: img.file_path })} className={`w-10 h-10 rounded overflow-hidden border-2 transition-all ${initial.image === img.file_path ? 'border-primary-500' : 'border-transparent hover:border-gray-300'}`}>
-                  <img src={img.file_path} alt="" className="w-full h-full object-cover" />
+                <button key={img.id} type="button" onClick={() => onChange({ ...initial, image: img.public_url ?? img.file_path })} className={`w-10 h-10 rounded overflow-hidden border-2 transition-all ${initial.image === (img.public_url ?? img.file_path) ? 'border-primary-500' : 'border-transparent hover:border-gray-300'}`}>
+                  <img src={img.public_url ?? img.file_path} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

@@ -1,3 +1,32 @@
+/** Shimmer skeleton for any fixed-size image container.
+ *  Prevents the Unsplash/fallback flash on initial page load. */
+export function ImageSkeleton({ className = '' }: { className?: string }) {
+  return <div className={`bg-gray-200 animate-pulse ${className}`} />;
+}
+
+/** Skeleton that mirrors the Navbar layout while settings are loading.
+ *  Same height as the real Navbar so no layout shift. */
+export function NavbarSkeleton() {
+  return (
+    <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 md:h-20">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse" />
+            <div className="w-32 h-6 rounded bg-gray-200 animate-pulse hidden sm:block" />
+          </div>
+          <div className="hidden md:flex items-center gap-1">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="w-16 h-8 rounded-lg bg-gray-200 animate-pulse mx-1" />
+            ))}
+          </div>
+          <div className="w-10 h-10 rounded-lg bg-gray-200 animate-pulse md:hidden" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function LoadingSpinner({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
   const sizes = { sm: 'w-6 h-6', md: 'w-10 h-10', lg: 'w-16 h-16' };
   return (

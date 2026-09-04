@@ -1,4 +1,5 @@
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram } from 'lucide-react';
+import { formatTime } from '../../utils/format';
 import { settingsApi, openingHoursApi } from '../../api';
 import { useFetch } from '../../hooks/useFetch';
 import type { RestaurantSettings, OpeningHours } from '../../types';
@@ -86,7 +87,7 @@ export default function ContactInfo() {
                   {today ? `${day} (Today)` : day}
                 </span>
                 <span className={`text-sm ${h?.is_closed ? 'text-red-500 font-medium' : 'text-gray-600'}`}>
-                  {h ? h.is_closed ? 'Closed' : `${h.opening_time} – ${h.closing_time}` : '—'}
+                  {h ? h.is_closed ? 'Closed' : `${formatTime(h.opening_time)} – ${formatTime(h.closing_time)}` : '—'}
                 </span>
               </div>
             );

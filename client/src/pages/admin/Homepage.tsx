@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Save } from 'lucide-react';
 import { homepageApi } from '../../api';
-import { useFetch } from '../../hooks/useFetch';
+import { useFetch, broadcastRefresh } from '../../hooks/useFetch';
 import { getErrorMessage } from '../../utils/errors';
 import PageHeader from '../../components/admin/PageHeader';
 import { Toast, useToast } from '../../components/admin/Toast';
@@ -18,7 +18,7 @@ const FIELD_LABELS: Record<string, string> = {
 };
 
 export default function AdminHomepage() {
-  const { data, loading, refetch } = useFetch<any>(() => homepageApi.getSections(), []);
+  const { data, loading, refetch } = useFetch<any>(() => homepageApi.getSections(), [], { autoRefresh: false });
   const { toast, show, hide } = useToast();
   const [editing, setEditing] = useState<Record<string, any>>({});
   const [saving, setSaving] = useState<string | null>(null);
@@ -45,6 +45,7 @@ export default function AdminHomepage() {
       show(`${SECTIONS.find(s => s.key === section)?.label || section} updated!`);
       setEditing((prev) => ({ ...prev, [section]: undefined }));
       refetch();
+      broadcastRefresh();
     } catch (err) { show(getErrorMessage(err, 'Failed to save'), 'error'); }
     finally { setSaving(null); }
   };

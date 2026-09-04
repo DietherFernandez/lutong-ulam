@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu as MenuIcon, X, UtensilsCrossed } from 'lucide-react';
 import { settingsApi } from '../../api';
 import { useFetch } from '../../hooks/useFetch';
+import { NavbarSkeleton } from '../common/States';
 import type { RestaurantSettings } from '../../types';
 
 const navLinks = [
@@ -16,12 +17,15 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  const { data: settings } = useFetch<{ settings: RestaurantSettings }>(
+  const { data: settings, loading } = useFetch<{ settings: RestaurantSettings }>(
     () => settingsApi.getAll(),
     []
   );
 
-  const restaurantName = settings?.settings?.restaurant_name || 'Savory Kitchen';
+  // Show skeleton while settings load to prevent logo/icon flash
+  if (loading) return <NavbarSkeleton />;
+
+  const restaurantName = settings?.settings?.restaurant_name || '';
   const logoUrl = settings?.settings?.logo_url || '';
 
   return (
@@ -37,9 +41,11 @@ export default function Navbar() {
                 <UtensilsCrossed size={20} />
               </div>
             )}
-            <span className="text-xl md:text-2xl font-serif font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
-              {restaurantName}
-            </span>
+            {restaurantName && (
+              <span className="text-xl md:text-2xl font-serif font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
+                {restaurantName}
+              </span>
+            )}
           </Link>
 
           {/* Desktop nav */}

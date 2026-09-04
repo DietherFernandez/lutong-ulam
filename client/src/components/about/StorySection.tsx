@@ -1,25 +1,38 @@
-import { settingsApi } from '../../api';
+import { settingsApi, homepageApi } from '../../api';
 import { useFetch } from '../../hooks/useFetch';
-import type { RestaurantSettings } from '../../types';
+import { ImageSkeleton } from '../common/States';
+import type { RestaurantSettings, HomepageSection } from '../../types';
 
-const STORY_IMG = 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600&h=500&fit=crop&q=80';
+/** Fallback image shown only after confirmed empty DB value (not on startup). */
+const STORY_FALLBACK = 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600&h=500&fit=crop&q=80';
 
 export default function StorySection() {
   const { data: settingsData } = useFetch<{ settings: RestaurantSettings }>(() => settingsApi.getAll(), []);
-  const name = settingsData?.settings?.restaurant_name || 'Savory Kitchen';
+  const { data: homepageData, loading } = useFetch<{ sections: Record<string, HomepageSection> }>(() => homepageApi.getSections(), []);
+
+  const name = settingsData?.settings?.restaurant_name || '';
+  // Only show the DB image after confirmed load — no Unsplash flash on startup.
+  const storyImage = homepageData?.sections?.about?.image || '';
 
   return (
     <section className="py-16 md:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="rounded-2xl overflow-hidden shadow-xl">
-            <img src={STORY_IMG} alt="Our kitchen" className="w-full h-80 object-cover hover:scale-105 transition-transform duration-500" />
+          <div className="rounded-2xl overflow-hidden shadow-xl min-h-[320px]">
+            {loading ? (
+              <ImageSkeleton className="w-full h-80" />
+            ) : storyImage ? (
+              <img src={storyImage} alt="Our kitchen" className="w-full h-80 object-cover hover:scale-105 transition-transform duration-500" />
+            ) : (
+              // Show fallback only after confirmed empty value — not on initial load
+              <img src={STORY_FALLBACK} alt="Our kitchen" className="w-full h-80 object-cover hover:scale-105 transition-transform duration-500" />
+            )}
           </div>
           <div>
             <span className="inline-block text-sm font-bold text-primary-600 uppercase tracking-widest mb-3">Our Journey</span>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-6">A Passion for Great Food</h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">
-              <p>Founded with a love for culinary excellence, {name} has been a beloved gathering place for food lovers in our community for over a decade. What started as a simple dream to share incredible flavors has grown into a destination where every meal becomes a cherished memory.</p>
+              <p>Founded with a love for culinary excellence{name && `, ${name}`}, we have been a beloved gathering place for food lovers in our community for over a decade. What started as a simple dream to share incredible flavors has grown into a destination where every meal becomes a cherished memory.</p>
               <p>Our chefs bring together time-honored techniques and modern creativity, crafting dishes that honor tradition while embracing innovation. We source the finest local ingredients — from farm-fresh vegetables to premium cuts — because we believe great food starts with great ingredients.</p>
               <p>Whether you're celebrating a special occasion or enjoying a casual dinner, we invite you to pull up a chair and experience the warmth and flavor that keep our guests coming back time and time again.</p>
             </div>

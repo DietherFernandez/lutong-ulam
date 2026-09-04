@@ -11,11 +11,11 @@ import { useAuth } from '../../contexts/AuthContext';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
-  const { data: d, loading: l1 } = useFetch<any>(() => dishesApi.getAll(), []);
-  const { data: c, loading: l2 } = useFetch<any>(() => categoriesApi.getAll(), []);
-  const { data: i, loading: l3 } = useFetch<any>(() => imagesApi.getAll(), []);
-  const { data: h, loading: l4 } = useFetch<any>(() => openingHoursApi.getAll(), []);
-  const { data: s, loading: l5 } = useFetch<any>(() => settingsApi.getAll(), []);
+  const { data: d, loading: l1 } = useFetch<any>(() => dishesApi.getAll(), [], { autoRefresh: false });
+  const { data: c, loading: l2 } = useFetch<any>(() => categoriesApi.getAll(), [], { autoRefresh: false });
+  const { data: i, loading: l3 } = useFetch<any>(() => imagesApi.getAll(), [], { autoRefresh: false });
+  const { data: h, loading: l4 } = useFetch<any>(() => openingHoursApi.getAll(), [], { autoRefresh: false });
+  const { data: s, loading: l5 } = useFetch<any>(() => settingsApi.getAll(), [], { autoRefresh: false });
 
   const dishes = d?.dishes || [];
   const hours = h?.hours || [];

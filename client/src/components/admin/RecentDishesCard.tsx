@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { formatPrice } from '../../utils/format';
 import { ArrowRight, TrendingUp } from 'lucide-react';
 import type { Dish } from '../../types';
 
@@ -27,7 +28,7 @@ export default function RecentDishesCard({ dishes }: { dishes: Dish[] }) {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-gray-900 truncate">{dish.name}</p>
-                <p className="text-xs text-gray-500">{dish.category_name || 'Uncategorized'} · ${Number(dish.price).toFixed(2)}</p>
+                <p className="text-xs text-gray-500">{dish.category_name || 'Uncategorized'} · {formatPrice(dish.price)}</p>
               </div>
               {dish.is_featured ? (
                 <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full font-semibold">Featured</span>

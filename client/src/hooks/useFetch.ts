@@ -1,5 +1,27 @@
 import { useState, useEffect } from 'react';
 
+/**
+ * Lightweight in-memory pub/sub for broadcasting data-change signals.
+ * When any part of the app (e.g. admin save) calls `broadcastRefresh()`, every
+ * `useAutoRefresh` listener on the page will re-fetch automatically — even
+ * without a page reload or tab switch.
+ *
+ * Usage:
+ *   import { broadcastRefresh } from '../hooks/useFetch';
+ *   broadcastRefresh();        // in admin save handler
+ */
+type Listener = () => void;
+const listeners = new Set<Listener>();
+
+export function broadcastRefresh() {
+  listeners.forEach((fn) => fn());
+}
+
+function subscribeToRefresh(fn: Listener): () => void {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+}
+
 interface UseFetchResult<T> {
   data: T | null;
   loading: boolean;
@@ -31,8 +53,10 @@ function getErrorMessage(err: unknown): string {
 
 export function useFetch<T>(
   fetchFn: () => Promise<T>,
-  deps: unknown[] = []
+  deps: unknown[] = [],
+  options: { autoRefresh?: boolean } = { autoRefresh: true }
 ): UseFetchResult<T> {
+  const { autoRefresh = true } = options;
   const [data, setData]       = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]    = useState<string | null>(null);
@@ -57,6 +81,25 @@ export function useFetch<T>(
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...deps, reload]);
+
+  // Auto-refresh: re-fetch when the tab regains focus (e.g. admin switches
+  // back to the public site) and when any part of the app calls
+  // broadcastRefresh() (e.g. admin saves a new setting).
+  useEffect(() => {
+    if (!autoRefresh) return;
+
+    const onFocus = () => setReload((n) => n + 1);
+    const unsubBroadcast = subscribeToRefresh(() => onFocus());
+
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onFocus);
+
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onFocus);
+      unsubBroadcast();
+    };
+  }, [autoRefresh]);
 
   return {
     data,

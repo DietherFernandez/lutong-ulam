@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Plus, Search } from 'lucide-react';
 import { dishesApi, categoriesApi, imagesApi } from '../../api';
-import { useFetch } from '../../hooks/useFetch';
+import { useFetch, broadcastRefresh } from '../../hooks/useFetch';
 import { getErrorMessage } from '../../utils/errors';
 import PageHeader from '../../components/admin/PageHeader';
 import Modal from '../../components/admin/Modal';
@@ -14,9 +14,9 @@ import type { Dish, Category, Image } from '../../types';
 const EMPTY = { name: '', description: '', price: '', category_id: '' as number | '', image: '', is_available: true, is_featured: false };
 
 export default function AdminDishes() {
-  const { data, loading, refetch } = useFetch<{ dishes: Dish[] }>(() => dishesApi.getAll(), []);
-  const { data: cd } = useFetch<{ categories: Category[] }>(() => categoriesApi.getAll(), []);
-  const { data: id } = useFetch<{ images: Image[] }>(() => imagesApi.getAll(), []);
+  const { data, loading, refetch } = useFetch<{ dishes: Dish[] }>(() => dishesApi.getAll(), [], { autoRefresh: false });
+  const { data: cd } = useFetch<{ categories: Category[] }>(() => categoriesApi.getAll(), [], { autoRefresh: false });
+  const { data: id } = useFetch<{ images: Image[] }>(() => imagesApi.getAll(), [], { autoRefresh: false });
   const { toast, show, hide } = useToast();
 
   const [search, setSearch] = useState('');
@@ -57,6 +57,7 @@ export default function AdminDishes() {
       else { await dishesApi.create(payload as any); show('Dish created!'); }
       setModalOpen(false);
       refetch();
+      broadcastRefresh();
     } catch (err) { show(getErrorMessage(err, 'Failed to save'), 'error'); }
     finally { setSaving(false); }
   };
@@ -64,7 +65,7 @@ export default function AdminDishes() {
   const handleDelete = async () => {
     if (!deleteId) return;
     setDeleting(true);
-    try { await dishesApi.delete(deleteId); show('Dish deleted!'); setDeleteId(null); refetch(); }
+    try { await dishesApi.delete(deleteId); show('Dish deleted!'); setDeleteId(null); refetch(); broadcastRefresh(); }
     catch (err) { show(getErrorMessage(err, 'Failed to delete'), 'error'); }
     finally { setDeleting(false); }
   };
@@ -85,7 +86,14 @@ export default function AdminDishes() {
       </div>
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editId ? 'Edit Dish' : 'Add New Dish'} maxWidth="xl">
-        <DishForm initial={form} categories={categories} images={images} errors={errors} onChange={setForm} />
+        <DishForm
+          initial={form}
+          categories={categories}
+          images={images}
+          errors={errors}
+          onChange={setForm}
+          onUploadError={(err) => show(getErrorMessage(err, 'Image upload failed'), 'error')}
+        />
         <div className="flex justify-end gap-3 pt-4 mt-4 border-t">
           <button onClick={() => setModalOpen(false)} className="btn-secondary">Cancel</button>
           <button onClick={handleSave} disabled={saving} className="btn-primary disabled:opacity-60">{saving ? 'Saving...' : editId ? 'Save Changes' : 'Create Dish'}</button>
