@@ -15,8 +15,8 @@ export default function ContactPage() {
       <div className="bg-gradient-to-br from-primary-700 to-primary-900 text-white pb-16 md:pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
           <span className="inline-block text-sm font-bold text-primary-300 uppercase tracking-widest mb-3">Get in Touch</span>
-          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">Contact Us</h1>
-          <p className="text-primary-200 text-lg max-w-2xl">We'd love to hear from you. Reach out with questions, reservation requests, or just to say hello.</p>
+          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">{settings?.contact_page_title || 'Contact Us'}</h1>
+          <p className="text-primary-200 text-lg max-w-2xl">{settings?.contact_page_subtitle || "We'd love to hear from you. Reach out with questions, reservation requests, or just to say hello."}</p>
         </div>
       </div>
 
@@ -24,7 +24,7 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Form card */}
           <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Send us a Message</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-6">{settings?.contact_form_title || 'Send us a Message'}</h2>
             <ContactForm />
           </div>
 

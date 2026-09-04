@@ -1,16 +1,21 @@
-import { dishesApi } from '../../api';
+import { dishesApi, settingsApi } from '../../api';
 import { useFetch } from '../../hooks/useFetch';
 import DishCard from '../../components/common/DishCard';
 import { LoadingSpinner, EmptyState } from '../../components/common/States';
-import type { Dish } from '../../types';
+import type { Dish, RestaurantSettings } from '../../types';
 
 export default function MenuPage() {
   const { data, loading, error, refetch } = useFetch<{ dishes: Dish[] }>(
     () => dishesApi.getAll(),
     []
   );
+  const { data: settingsData } = useFetch<{ settings: RestaurantSettings }>(
+    () => settingsApi.getAll(), []
+  );
 
   const dishes = data?.dishes || [];
+  const title = settingsData?.settings?.menu_page_title || 'Discover Our Dishes';
+  const subtitle = settingsData?.settings?.menu_page_subtitle || 'From appetizers to desserts, every dish is crafted with passion using the freshest ingredients.';
 
   return (
     <div className="min-h-screen pt-24 md:pt-28 pb-16 bg-gray-50">
@@ -21,11 +26,10 @@ export default function MenuPage() {
             Our Menu
           </span>
           <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">
-            Discover Our Dishes
+            {title}
           </h1>
           <p className="text-primary-200 text-lg max-w-2xl mx-auto">
-            From appetizers to desserts, every dish is crafted with passion using
-            the freshest ingredients.
+            {subtitle}
           </p>
         </div>
       </div>

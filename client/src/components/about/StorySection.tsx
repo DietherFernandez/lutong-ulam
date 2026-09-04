@@ -30,7 +30,7 @@ export default function StorySection() {
           </div>
           <div>
             <span className="inline-block text-sm font-bold text-primary-600 uppercase tracking-widest mb-3">Our Journey</span>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-6">A Passion for Great Food</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-6">{settingsData?.settings?.about_story_title || 'A Passion for Great Food'}</h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">
               <p>Founded with a love for culinary excellence{name && `, ${name}`}, we have been a beloved gathering place for food lovers in our community for over a decade. What started as a simple dream to share incredible flavors has grown into a destination where every meal becomes a cherished memory.</p>
               <p>Our chefs bring together time-honored techniques and modern creativity, crafting dishes that honor tradition while embracing innovation. We source the finest local ingredients — from farm-fresh vegetables to premium cuts — because we believe great food starts with great ingredients.</p>

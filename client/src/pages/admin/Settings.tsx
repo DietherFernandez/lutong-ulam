@@ -112,6 +112,62 @@ export default function AdminSettings() {
           </div>
         </div>
 
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h2 className="font-bold text-gray-900 mb-2">Website Text</h2>
+          <p className="text-sm text-gray-500 mb-4">Customize the text shown across your website. Leave blank to use the default text.</p>
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">Featured Dishes Section (Homepage)</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <SettingsField label="Section Title" value={val('featured_section_title')} onChange={(v) => merge('featured_section_title', v)} placeholder="Featured Dishes" />
+                <SettingsField label="Section Subtitle" value={val('featured_section_subtitle')} onChange={(v) => merge('featured_section_subtitle', v)} placeholder="Handcrafted dishes made with the finest, locally-sourced ingredients" />
+              </div>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">Menu Page</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <SettingsField label="Page Title" value={val('menu_page_title')} onChange={(v) => merge('menu_page_title', v)} placeholder="Discover Our Dishes" />
+                <SettingsField label="Page Subtitle" value={val('menu_page_subtitle')} onChange={(v) => merge('menu_page_subtitle', v)} placeholder="From appetizers to desserts..." />
+              </div>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">Contact Page</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <SettingsField label="Page Title" value={val('contact_page_title')} onChange={(v) => merge('contact_page_title', v)} placeholder="Contact Us" />
+                <SettingsField label="Page Subtitle" value={val('contact_page_subtitle')} onChange={(v) => merge('contact_page_subtitle', v)} placeholder="We'd love to hear from you..." />
+                <div className="sm:col-span-2"><SettingsField label="Form Heading" value={val('contact_form_title')} onChange={(v) => merge('contact_form_title', v)} placeholder="Send us a Message" /></div>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">About Page</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <SettingsField label="Story Section Title" value={val('about_story_title')} onChange={(v) => merge('about_story_title', v)} placeholder="A Passion for Great Food" />
+                <SettingsField label="Chef Section Title" value={val('about_chef_title')} onChange={(v) => merge('about_chef_title', v)} placeholder="Our Head Chef" />
+                <SettingsField label="Values Section Title" value={val('about_values_title')} onChange={(v) => merge('about_values_title', v)} placeholder="Our Core Values" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h2 className="font-bold text-gray-900 mb-2">Contact Messages</h2>
+          <p className="text-sm text-gray-500 mb-4">Auto-cleanup prevents the device/database from filling up with old messages.</p>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Message Retention Period</label>
+            <select
+              value={val('message_retention_days') || '90'}
+              onChange={(e) => merge('message_retention_days', e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="0">Never (manual cleanup only)</option>
+              <option value="30">30 days</option>
+              <option value="60">60 days</option>
+              <option value="90">90 days (recommended)</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-2">Old messages are automatically deleted when new ones arrive. You can always delete messages manually from the Messages page.</p>
+          </div>
+        </div>
+
         <div className="flex justify-end">
           <button onClick={handleSave} disabled={saving} className="btn-primary disabled:opacity-60">{saving ? 'Saving...' : 'Save All Settings'}</button>
         </div>

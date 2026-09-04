@@ -7,6 +7,7 @@ export { imagesApi }       from './images';
 export { settingsApi }      from './settings';
 export { openingHoursApi }  from './openingHours';
 export { homepageApi }     from './homepage';
+export { messagesApi }     from './messages';
 
 // Dashboard aggregates.
 import { dishesApi }  from './dishes';

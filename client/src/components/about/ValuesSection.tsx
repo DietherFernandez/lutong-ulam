@@ -1,4 +1,7 @@
 import { Award, Users, Leaf, Heart } from 'lucide-react';
+import { settingsApi } from '../../api';
+import { useFetch } from '../../hooks/useFetch';
+import type { RestaurantSettings } from '../../types';
 
 const values = [
   { icon: Leaf, title: 'Fresh & Local', desc: 'We partner with local farms to bring you the freshest seasonal ingredients every single day.' },
@@ -8,12 +11,15 @@ const values = [
 ];
 
 export default function ValuesSection() {
+  const { data: settingsData } = useFetch<{ settings: RestaurantSettings }>(() => settingsApi.getAll(), []);
+  const title = settingsData?.settings?.about_values_title || 'Our Core Values';
+
   return (
     <section className="py-16 md:py-24 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <span className="inline-block text-sm font-bold text-primary-600 uppercase tracking-widest mb-3">What We Stand For</span>
-          <h2 className="section-title">Our Core Values</h2>
+          <h2 className="section-title">{title}</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {values.map(({ icon: Icon, title, desc }) => (

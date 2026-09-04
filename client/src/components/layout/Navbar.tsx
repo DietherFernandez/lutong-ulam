@@ -35,7 +35,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             {logoUrl ? (
-              <img src={logoUrl} alt={restaurantName} className="w-10 h-10 object-contain" />
+              <img src={logoUrl} alt={restaurantName} className="w-10 h-10 logo-round" />
             ) : (
               <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent-500 rounded-full flex items-center justify-center text-white shadow-md group-hover:shadow-lg transition-shadow">
                 <UtensilsCrossed size={20} />

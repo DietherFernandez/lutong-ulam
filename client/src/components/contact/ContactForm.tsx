@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Send } from 'lucide-react';
+import { messagesApi } from '../../api';
+import { getErrorMessage } from '../../utils/errors';
 
 export default function ContactForm() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
@@ -15,9 +17,14 @@ export default function ContactForm() {
     }
     setSending(true);
     setError('');
-    await new Promise((r) => setTimeout(r, 1200));
-    setSending(false);
-    setSent(true);
+    try {
+      await messagesApi.submit(form);
+      setSent(true);
+    } catch (err) {
+      setError(getErrorMessage(err, 'Failed to send message. Please try again later.'));
+    } finally {
+      setSending(false);
+    }
   };
 
   if (sent) {

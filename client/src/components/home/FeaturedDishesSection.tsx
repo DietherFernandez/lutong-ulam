@@ -1,17 +1,22 @@
 import { Link } from 'react-router-dom';
 import { ChefHat } from 'lucide-react';
-import { dishesApi } from '../../api';
+import { dishesApi, settingsApi } from '../../api';
 import { useFetch } from '../../hooks/useFetch';
 import DishCard from '../common/DishCard';
 import { LoadingSpinner } from '../common/States';
-import type { Dish } from '../../types';
+import type { Dish, RestaurantSettings } from '../../types';
 
 export default function FeaturedDishesSection() {
   const { data, loading } = useFetch<{ dishes: Dish[] }>(
     () => dishesApi.getFeatured(), []
   );
+  const { data: settingsData } = useFetch<{ settings: RestaurantSettings }>(
+    () => settingsApi.getAll(), []
+  );
 
   const dishes = data?.dishes || [];
+  const title = settingsData?.settings?.featured_section_title || 'Featured Dishes';
+  const subtitle = settingsData?.settings?.featured_section_subtitle || 'Handcrafted dishes made with the finest, locally-sourced ingredients';
 
   return (
     <section className="py-16 md:py-24 bg-gray-50">
@@ -20,9 +25,9 @@ export default function FeaturedDishesSection() {
           <span className="inline-block text-sm font-bold text-primary-600 uppercase tracking-widest mb-3">
             Chef's Selection
           </span>
-          <h2 className="section-title">Featured Dishes</h2>
+          <h2 className="section-title">{title}</h2>
           <p className="section-subtitle">
-            Handcrafted dishes made with the finest, locally-sourced ingredients
+            {subtitle}
           </p>
         </div>
 

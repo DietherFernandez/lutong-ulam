@@ -57,6 +57,18 @@ export interface RestaurantSettings {
   facebook_url?: string;
   instagram_url?: string;
   logo_url?: string;
+  message_retention_days?: string;
+  // Website text fields
+  featured_section_title?: string;
+  featured_section_subtitle?: string;
+  menu_page_title?: string;
+  menu_page_subtitle?: string;
+  contact_page_title?: string;
+  contact_page_subtitle?: string;
+  contact_form_title?: string;
+  about_story_title?: string;
+  about_chef_title?: string;
+  about_values_title?: string;
 }
 
 export interface OpeningHours {
@@ -80,4 +92,15 @@ export interface DashboardStats {
   dishes: { total: number; available: number; featured: number };
   categories: { total: number };
   images: { total: number; totalSize: number };
+}
+
+export interface ContactMessage {
+  id: number;
+  name: string;
+  email: string;
+  phone?: string;
+  subject?: string;
+  message: string;
+  is_read: boolean;
+  created_at: string;
 }

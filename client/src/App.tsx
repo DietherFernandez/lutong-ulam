@@ -16,6 +16,7 @@ import AdminImages from './pages/admin/Images';
 import AdminSettings from './pages/admin/Settings';
 import AdminHours from './pages/admin/Hours';
 import AdminHomepage from './pages/admin/Homepage';
+import AdminMessages from './pages/admin/Messages';
 import ProtectedRoute from './components/admin/ProtectedRoute';
 import AdminLayout from './components/admin/AdminLayout';
 
@@ -46,6 +47,7 @@ function App() {
           <Route path="settings" element={<AdminSettings />} />
           <Route path="hours" element={<AdminHours />} />
           <Route path="homepage" element={<AdminHomepage />} />
+          <Route path="messages" element={<AdminMessages />} />
         </Route>
 
         {/* 404 */}

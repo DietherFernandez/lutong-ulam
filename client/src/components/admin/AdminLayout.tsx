@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, UtensilsCrossed, Tag, Image, Settings, Clock,
-  Home as HomeIcon, LogOut, Menu, X, ChevronRight
+  Home as HomeIcon, LogOut, Menu, X, ChevronRight, Mail
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { settingsApi } from '../../api';
+import { settingsApi, messagesApi } from '../../api';
 import { useFetch } from '../../hooks/useFetch';
 import type { RestaurantSettings } from '../../types';
 
@@ -14,6 +14,7 @@ const navItems = [
   { path: '/admin/dishes',  icon: UtensilsCrossed, label: 'Dishes' },
   { path: '/admin/categories', icon: Tag,         label: 'Categories' },
   { path: '/admin/images',   icon: Image,         label: 'Media Library' },
+  { path: '/admin/messages', icon: Mail,           label: 'Messages' },
   { path: '/admin/settings', icon: Settings,      label: 'Settings' },
   { path: '/admin/hours',    icon: Clock,         label: 'Opening Hours' },
   { path: '/admin/homepage', icon: HomeIcon,       label: 'Homepage' },
@@ -28,6 +29,18 @@ export default function AdminLayout() {
     () => settingsApi.getAll(),
     []
   );
+
+  // Poll for unread messages count (every 30s)
+  const { data: messagesData, refetch: refetchMessages } = useFetch<{ count: number }>(
+    () => messagesApi.getUnreadCount(),
+    []
+  );
+  const unreadCount = messagesData?.count ?? 0;
+
+  useEffect(() => {
+    const interval = setInterval(() => refetchMessages(), 30000);
+    return () => clearInterval(interval);
+  }, [refetchMessages]);
 
   const logoUrl = settingsData?.settings?.logo_url || '';
 
@@ -90,7 +103,12 @@ export default function AdminLayout() {
               onClick={() => setSidebarOpen(false)}
             >
               <Icon size={18} />
-              <span>{label}</span>
+              <span className="flex-1">{label}</span>
+              {path === '/admin/messages' && unreadCount > 0 && (
+                <span className="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>

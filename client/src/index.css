@@ -49,6 +49,11 @@
   .section-subtitle {
     @apply text-lg text-gray-600 max-w-2xl mx-auto;
   }
+
+  /* Logo styles */
+  .logo-round {
+    @apply rounded-full object-cover;
+  }
 }
 
 @layer utilities {
