@@ -37,3 +37,4 @@ server/database/*.db-journal
 # Uploads (local only — use Supabase Storage in production)
 server/uploads/
 .vercel
+.env*

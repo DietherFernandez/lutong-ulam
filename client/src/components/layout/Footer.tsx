@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { Facebook, Instagram } from 'lucide-react';
 import { settingsApi } from '../../api';
 import { useFetch } from '../../hooks/useFetch';
@@ -17,18 +16,6 @@ export default function Footer() {
     <footer className="bg-gray-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex flex-col items-center text-center max-w-2xl mx-auto">
-          {/* Logo + Name */}
-          <div className="flex items-center gap-2 mb-4">
-            {settings?.logo_url && (
-              <img src={settings.logo_url} alt={settings.restaurant_name || 'Logo'} className="w-10 h-10 logo-round" />
-            )}
-            {settings?.restaurant_name && (
-              <h3 className="text-xl font-serif font-bold text-white">
-                {settings.restaurant_name}
-              </h3>
-            )}
-          </div>
-
           {/* Description */}
           {settings?.description && (
             <p className="text-sm text-gray-400 leading-relaxed mb-4">
@@ -55,14 +42,6 @@ export default function Footer() {
               )}
             </div>
           )}
-
-          {/* Navigation Links (minimal) */}
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-6">
-            <Link to="/" className="text-sm text-gray-400 hover:text-white transition-colors">Home</Link>
-            <Link to="/menu" className="text-sm text-gray-400 hover:text-white transition-colors">Menu</Link>
-            <Link to="/about" className="text-sm text-gray-400 hover:text-white transition-colors">About</Link>
-            <Link to="/contact" className="text-sm text-gray-400 hover:text-white transition-colors">Contact</Link>
-          </div>
         </div>
 
         {/* Copyright */}
