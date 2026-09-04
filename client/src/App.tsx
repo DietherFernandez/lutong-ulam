@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 
 // Public pages
 import HomePage from './pages/public/HomePage';
@@ -24,35 +25,50 @@ import AdminLayout from './components/admin/AdminLayout';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 
+// Common components
+import ScrollToTop from './components/common/ScrollToTop';
+import PageWrapper from './components/common/PageWrapper';
+
 // Auth context provider
 import { AuthProvider } from './contexts/AuthContext';
 
-function App() {
+function AnimatedRoutes() {
+  const location = useLocation();
+
   return (
-    <AuthProvider>
-      <Routes>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
         {/* Public routes */}
-        <Route path="/" element={<><Navbar /><main><HomePage /></main><Footer /></>} />
-        <Route path="/menu" element={<><Navbar /><main><MenuPage /></main><Footer /></>} />
-        <Route path="/about" element={<><Navbar /><main><AboutPage /></main><Footer /></>} />
-        <Route path="/contact" element={<><Navbar /><main><ContactPage /></main><Footer /></>} />
+        <Route path="/" element={<><Navbar /><main><PageWrapper><HomePage /></PageWrapper></main><Footer /></>} />
+        <Route path="/menu" element={<><Navbar /><main><PageWrapper><MenuPage /></PageWrapper></main><Footer /></>} />
+        <Route path="/about" element={<><Navbar /><main><PageWrapper><AboutPage /></PageWrapper></main><Footer /></>} />
+        <Route path="/contact" element={<><Navbar /><main><PageWrapper><ContactPage /></PageWrapper></main><Footer /></>} />
 
         {/* Admin routes — nested under AdminLayout */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="dishes" element={<AdminDishes />} />
-          <Route path="categories" element={<AdminCategories />} />
-          <Route path="images" element={<AdminImages />} />
-          <Route path="settings" element={<AdminSettings />} />
-          <Route path="hours" element={<AdminHours />} />
-          <Route path="homepage" element={<AdminHomepage />} />
-          <Route path="messages" element={<AdminMessages />} />
+          <Route index element={<PageWrapper><AdminDashboard /></PageWrapper>} />
+          <Route path="dishes" element={<PageWrapper><AdminDishes /></PageWrapper>} />
+          <Route path="categories" element={<PageWrapper><AdminCategories /></PageWrapper>} />
+          <Route path="images" element={<PageWrapper><AdminImages /></PageWrapper>} />
+          <Route path="settings" element={<PageWrapper><AdminSettings /></PageWrapper>} />
+          <Route path="hours" element={<PageWrapper><AdminHours /></PageWrapper>} />
+          <Route path="homepage" element={<PageWrapper><AdminHomepage /></PageWrapper>} />
+          <Route path="messages" element={<PageWrapper><AdminMessages /></PageWrapper>} />
         </Route>
 
         {/* 404 */}
-        <Route path="*" element={<><Navbar /><main><NotFoundPage /></main><Footer /></>} />
+        <Route path="*" element={<><Navbar /><main><PageWrapper><NotFoundPage /></PageWrapper></main><Footer /></>} />
       </Routes>
+    </AnimatePresence>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <ScrollToTop />
+      <AnimatedRoutes />
     </AuthProvider>
   );
 }

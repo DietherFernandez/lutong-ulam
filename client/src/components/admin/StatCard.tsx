@@ -17,14 +17,15 @@ const colorMap = {
 export default function StatCard({ icon: Icon, label, value, hint, color = 'primary' }: StatCardProps) {
   const c = colorMap[color];
   return (
-    <div className="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow">
-      <div className="flex items-center gap-3 mb-2">
-        <div className={`w-10 h-10 rounded-lg ${c.bg} flex items-center justify-center`}>
-          <Icon size={20} className={c.text} />
+    <div className="bg-white rounded-xl shadow-sm p-4 sm:p-5 hover:shadow-md transition-shadow">
+      <div className="flex items-center gap-2 sm:gap-3 mb-2">
+        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg ${c.bg} flex items-center justify-center`}>
+          <Icon size={16} className={`sm:hidden ${c.text}`} />
+          <Icon size={20} className={`hidden sm:block ${c.text}`} />
         </div>
-        <span className="text-sm text-gray-500 font-medium">{label}</span>
+        <span className="text-xs sm:text-sm text-gray-500 font-medium">{label}</span>
       </div>
-      <div className="text-3xl font-bold text-gray-900">{value}</div>
+      <div className="text-2xl sm:text-3xl font-bold text-gray-900">{value}</div>
       {hint && <p className="text-xs text-gray-400 mt-1">{hint}</p>}
     </div>
   );
