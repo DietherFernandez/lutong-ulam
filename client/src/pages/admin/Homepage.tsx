@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Save } from 'lucide-react';
-import { homepageApi } from '../../api';
+import { useState, useRef } from 'react';
+import { Save, Upload, Loader2 } from 'lucide-react';
+import { homepageApi, imagesApi } from '../../api';
 import { useFetch, broadcastRefresh } from '../../hooks/useFetch';
 import { getErrorMessage } from '../../utils/errors';
 import PageHeader from '../../components/admin/PageHeader';
@@ -22,6 +22,8 @@ export default function AdminHomepage() {
   const { toast, show, hide } = useToast();
   const [editing, setEditing] = useState<Record<string, any>>({});
   const [saving, setSaving] = useState<string | null>(null);
+  const [uploading, setUploading] = useState<string | null>(null);
+  const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const sections = data?.sections || {};
 
@@ -32,6 +34,19 @@ export default function AdminHomepage() {
 
   const setVal = (section: string, key: string, val: any) => {
     setEditing((prev) => ({ ...prev, [section]: { ...prev[section], [key]: val } }));
+  };
+
+  const handleFileUpload = async (section: string, file: File) => {
+    setUploading(section);
+    try {
+      const uploaded = await imagesApi.upload(file);
+      setVal(section, 'image', uploaded.public_url);
+      show('Image uploaded successfully!', 'success');
+    } catch (err) {
+      show(getErrorMessage(err, 'Failed to upload image'), 'error');
+    } finally {
+      setUploading(null);
+    }
   };
 
   const hasChanges = (section: string) => !!editing[section];
@@ -79,7 +94,38 @@ export default function AdminHomepage() {
                       </label>
                     ) : f === 'image' ? (
                       <div className="space-y-2">
-                        <input className="input-field" value={getVal(key, f) || ''} onChange={(e) => setVal(key, f, e.target.value)} placeholder="https://..." />
+                        <div className="flex gap-2">
+                          <input
+                            className="input-field flex-1"
+                            value={getVal(key, f) || ''}
+                            onChange={(e) => setVal(key, f, e.target.value)}
+                            placeholder="https://..."
+                          />
+                          <button
+                            type="button"
+                            onClick={() => fileInputRefs.current[key]?.click()}
+                            disabled={uploading === key}
+                            className="btn-secondary flex items-center gap-2 px-4 py-3 whitespace-nowrap"
+                          >
+                            {uploading === key ? (
+                              <Loader2 size={16} className="animate-spin" />
+                            ) : (
+                              <Upload size={16} />
+                            )}
+                            {uploading === key ? 'Uploading...' : 'Upload'}
+                          </button>
+                          <input
+                            ref={(el) => { fileInputRefs.current[key] = el; }}
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp,image/gif"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleFileUpload(key, file);
+                              e.target.value = '';
+                            }}
+                          />
+                        </div>
                         {getVal(key, f) && <img src={getVal(key, f)} alt="" className="w-full max-h-32 object-cover rounded-lg bg-gray-100" />}
                       </div>
                     ) : (

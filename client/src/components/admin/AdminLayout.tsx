@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, UtensilsCrossed, Tag, Image, Settings, Clock,
   Home as HomeIcon, LogOut, Menu, X, ChevronRight, Mail
@@ -22,8 +23,20 @@ const navItems = [
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { logout, user } = useAuth();
   const navigate = useNavigate();
+
+  // Scroll listener to auto-close sidebar on scroll and add shadow
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+      if (sidebarOpen) setSidebarOpen(false);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [sidebarOpen]);
 
   const { data: settingsData } = useFetch<{ settings: RestaurantSettings }>(
     () => settingsApi.getAll(),
@@ -137,7 +150,7 @@ export default function AdminLayout() {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
-        <header className="bg-white shadow-sm h-16 flex items-center px-4 md:px-8 gap-4 sticky top-0 z-30">
+        <header className={`bg-white transition-shadow duration-300 h-16 flex items-center px-4 md:px-8 gap-4 sticky top-0 z-30 ${scrolled ? 'shadow-md' : 'shadow-sm'}`}>
           <button
             onClick={() => setSidebarOpen(true)}
             className="lg:hidden p-2 hover:bg-gray-100 rounded-lg"
