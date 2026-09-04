@@ -21,7 +21,7 @@ export default function ValuesSection() {
           <span className="inline-block text-sm font-bold text-primary-600 uppercase tracking-widest mb-3">What We Stand For</span>
           <h2 className="section-title">{title}</h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {values.map(({ icon: Icon, title, desc }) => (
             <div key={title} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow text-center">
               <div className="w-14 h-14 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">

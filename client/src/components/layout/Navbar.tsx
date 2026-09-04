@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu as MenuIcon, X, UtensilsCrossed } from 'lucide-react';
 import { settingsApi } from '../../api';
@@ -16,6 +16,25 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const lastScrollY = useRef(0);
+
+  // Close mobile menu automatically as soon as the user scrolls
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Record the current scroll position as the baseline when menu opens
+    lastScrollY.current = window.scrollY;
+
+    const handleScroll = () => {
+      if (window.scrollY !== lastScrollY.current) {
+        setIsOpen(false);
+        lastScrollY.current = window.scrollY;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isOpen]);
 
   const { data: settings, loading } = useFetch<{ settings: RestaurantSettings }>(
     () => settingsApi.getAll(),

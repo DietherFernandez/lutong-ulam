@@ -17,18 +17,21 @@ export default function StorySection() {
   return (
     <section className="py-16 md:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="rounded-2xl overflow-hidden shadow-xl min-h-[320px]">
+        {/* Phone: float layout (Word-style wrap). md+: 5/7 grid. */}
+        <div className="md:grid md:grid-cols-12 md:gap-12 md:items-center">
+          {/* Image — floats left on phone, 5/12 column on md+ */}
+          <div className="float-left mr-4 mb-3 w-36 shrink-0 rounded-2xl overflow-hidden shadow-xl md:float-none md:mr-0 md:mb-0 md:w-auto md:col-span-5">
             {loading ? (
-              <ImageSkeleton className="w-full h-80" />
+              <ImageSkeleton className="w-full h-44 md:h-72" />
             ) : storyImage ? (
-              <img src={storyImage} alt="Our kitchen" className="w-full h-80 object-cover hover:scale-105 transition-transform duration-500" />
+              <img src={storyImage} alt="Our kitchen" className="w-full h-44 md:h-72 object-cover hover:scale-105 transition-transform duration-500" />
             ) : (
               // Show fallback only after confirmed empty value — not on initial load
-              <img src={STORY_FALLBACK} alt="Our kitchen" className="w-full h-80 object-cover hover:scale-105 transition-transform duration-500" />
+              <img src={STORY_FALLBACK} alt="Our kitchen" className="w-full h-44 md:h-72 object-cover hover:scale-105 transition-transform duration-500" />
             )}
           </div>
-          <div>
+          {/* Text — wraps beside image on phone, full 7/12 column on md+ */}
+          <div className="md:col-span-7">
             <span className="inline-block text-sm font-bold text-primary-600 uppercase tracking-widest mb-3">Our Journey</span>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-6">{settingsData?.settings?.about_story_title || 'A Passion for Great Food'}</h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">

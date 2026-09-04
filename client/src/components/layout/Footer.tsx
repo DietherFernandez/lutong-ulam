@@ -1,4 +1,5 @@
 import { Facebook, Instagram } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { settingsApi } from '../../api';
 import { useFetch } from '../../hooks/useFetch';
 import type { RestaurantSettings } from '../../types';
@@ -45,10 +46,13 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-gray-800 pt-6 text-center">
+        <div className="border-t border-gray-800 pt-6 text-center flex flex-col sm:flex-row items-center justify-center gap-2">
           <p className="text-sm text-gray-500">
             &copy; {currentYear}{settings?.restaurant_name ? ` ${settings.restaurant_name}` : ''}. All rights reserved.
           </p>
+          <Link to="/admin/login" className="text-xs text-gray-600 hover:text-primary-400 transition-colors">
+            Admin
+          </Link>
         </div>
       </div>
     </footer>
