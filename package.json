@@ -1,0 +1,14 @@
+{
+  "name": "restaurant-website",
+  "version": "1.0.0",
+  "description": "Restaurant website + admin dashboard — React + Supabase + Cloudflare Pages",
+  "private": true,
+  "scripts": {
+    "dev": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "preview": "cd client && npm run preview"
+  },
+  "keywords": ["restaurant", "react", "supabase", "cloudflare", "admin-dashboard"],
+  "author": "",
+  "license": "MIT"
+}
